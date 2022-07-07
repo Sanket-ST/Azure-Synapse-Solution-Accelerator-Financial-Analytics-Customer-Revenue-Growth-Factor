@@ -34,8 +34,8 @@
         
         "uniqueName": "[uniqueString( variables('rgId') )]",
         "synapseWorkspaceName": "[concat(variables('paramName'), '-synapse-workspace')]",
-        "storageName": "[replace(replace(toLower(concat( variables('paramName'), variables('uniqueName') )),'-',''),'_','')]",
-
+        "storageName": "[concat('adls', variables('uniqueName'))]",
+        
         "machinelearningName": "[concat('ml-', variables('paramName'))]",
         "storageMLname": "[replace(replace(toLower(concat( variables('machinelearningName'), variables('uniqueName') )),'-',''),'_','')]",
         "appinsightsname": "[concat(variables('machinelearningName'), 'ai')]",

@@ -29,7 +29,7 @@
         "containerName": "source",
         "storageAccountSubscriptionId": "[subscription().subscriptionId]",
         "storageAccountResourceGroup": "[resourceGroup().name]",
-        "storageName": "6764097u5lhkczaadb6",
+        "storageName": "adlsi4ryf7fd3u5u6",
         "skipValidation": "false",
         "authenticationType": "Account Key",
         "relativePath": "transformed_data/ml_data_parquet/**",

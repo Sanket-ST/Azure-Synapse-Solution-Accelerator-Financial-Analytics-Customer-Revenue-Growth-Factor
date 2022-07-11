@@ -4,7 +4,7 @@
     "parameters": {
         "DeploymentID": {
             "minLength": 3,
-            "maxLength": 7,
+            "maxLength": 6,
             "type": "String",
             "metadata": {
                 "description": "Name prefix between 3-5 characters with only characters and numbers"

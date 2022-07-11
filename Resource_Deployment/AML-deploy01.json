@@ -1,0 +1,108 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "DeploymentID": {
+            "minLength": 3,
+            "maxLength": 7,
+            "type": "String",
+            "metadata": {
+                "description": "Name prefix between 3-5 characters with only characters and numbers"
+            }
+        }
+    },
+    "variables": {
+        "subscriptionId": "[subscription().subscriptionId]",
+        "location": "[resourceGroup().location]",
+        "rgId": "[resourceGroup().id]",
+        "rgName": "[resourceGroup().name]",
+        "appinsightsname": "[concat(variables('machinelearningName'), 'ai')]",
+        "paramName": "[parameters('DeploymentID')]",
+        "machinelearningName": "[concat('ml-', variables('paramName'))]",
+        "computeInstanceName": "manymodel-compute",
+        "disableLocalAuth": "false",
+        "maxNodeCount": "1",
+        "minNodeCount": "0",
+        "nodeIdleTimeBeforeScaleDown": "PT120S",
+        "remoteLoginPortPublicAccess": "NotSpecified",
+        "vmSize": "Standard_DS3_v2",
+        "vmPriority": "Dedicated",
+        "datastoreName": "mldatastore",
+        "containerName": "source",
+        "storageAccountSubscriptionId": "[subscription().subscriptionId]",
+        "storageAccountResourceGroup": "[resourceGroup().name]",
+        "storageName": "6764097u5lhkczaadb6",
+        "skipValidation": "false",
+        "authenticationType": "Account Key",
+        "relativePath": "transformed_data/ml_data_parquet/**",
+        "datasetName": "mldataset"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.MachineLearningServices/workspaces/computes",
+            "apiVersion": "2020-04-01",
+            "name": "[concat(variables('machinelearningName'), '/', variables('computeInstanceName'))]",
+            "location": "[variables('location')]",
+            "properties": {
+                "computeType": "AmlCompute",
+                "disableLocalAuth": "[variables('disableLocalAuth')]",
+                "properties": {
+                    "remoteLoginPortPublicAccess": "[variables('remoteLoginPortPublicAccess')]",
+                    "scaleSettings": {
+                        "maxNodeCount": "[variables('maxNodeCount')]",
+                        "minNodeCount": "[variables('minNodeCount')]",
+                        "nodeIdleTimeBeforeScaleDown": "[variables('nodeIdleTimeBeforeScaleDown')]"
+                    },
+                    "vmPriority": "[variables('vmPriority')]",
+                    "vmSize": "[variables('vmSize')]"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.MachineLearningServices/workspaces/datastores",
+            "apiVersion": "2020-05-01-preview",
+            "name": "[concat(variables('machinelearningName'), '/', variables('datastoreName'))]",
+            "location": "[variables('location')]",
+            "properties": {
+                "DataStoreType": "blob",
+                "AccountName": "[variables('storageName')]",
+                "ContainerName": "[variables('containerName')]",
+                "AccountKey": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageName')), '2019-06-01').keys[0].value]"
+            }
+        },
+        {
+            "type": "Microsoft.MachineLearningServices/workspaces/datasets",
+            "apiVersion": "2020-05-01-preview",
+            "name": "[concat(variables('machinelearningName'), '/', variables('datasetName'))]",
+            "location": "[variables('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/datastores', variables('machinelearningName'), variables('datastoreName'))]"
+            ],
+            "properties": {
+                "SkipValidation": "[variables('skipValidation')]",
+                "DatasetType": "Tabular",
+                "Parameters": {
+                    "Path": {
+                        "DataPath": {
+                            "RelativePath": "[variables('relativePath')]",
+                            "DatastoreName": "[variables('datastoreName')]"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
+            "name": "pid-fcd51158-1534-584d-a653-5a46bbe4ad99",
+            "properties": {
+                "mode": "Incremental",
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "resources": []
+                }
+            }
+        }
+    ]
+}

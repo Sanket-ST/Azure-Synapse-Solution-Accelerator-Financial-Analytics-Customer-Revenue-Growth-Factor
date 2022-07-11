@@ -17,7 +17,7 @@
         "rgId": "[resourceGroup().id]",
         "rgName": "[resourceGroup().name]",
         "appinsightsname": "[concat(variables('machinelearningName'), 'ai')]",
-        "paramName": "[parameters('DeploymentID')]",
+        "paramName": "[parameters('deploymentId')]",
         "machinelearningName": "[concat('ml-', variables('paramName'))]",
         "computeInstanceName": "manymodel-compute",
         "disableLocalAuth": "false",

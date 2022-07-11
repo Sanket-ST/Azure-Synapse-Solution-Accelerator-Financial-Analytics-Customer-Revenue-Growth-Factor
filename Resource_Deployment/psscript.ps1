@@ -130,7 +130,8 @@ mkdir synapse-ws-L400
 cd C:\synapse-ws-L400
 git clone https://github.com/solliancenet/azure-synapse-analytics-workshop-400
 
-Copy-Item "C:\Users\demouser\Azure-Synapse-Solution-Accelerator-Financial-Analytics-Customer-Revenue-Growth-Factor\Analytics_Deployment\synapse-workspace\cluster_config\requirements.txt" -Destination "C:\syapse-ws-L400\azure-synapse-analytics-workshop-400\artifacts\environment-setup\automation"
+Copy-Item "C:\Users\demouser\Azure-Synapse-Solution-Accelerator-Financial-Analytics-Customer-Revenue-Growth-Factor\Analytics_Deployment\synapse-workspace\cluster_config\requirements.txt" -Destination "C:\synapse-ws-L400\azure-synapse-analytics-workshop-400\artifacts\environment-setup\automation"
+                                                                                                                                                                                                         
 
 
 cd "C:\synapse-ws-L400\azure-synapse-analytics-workshop-400\artifacts\environment-setup\automation\"

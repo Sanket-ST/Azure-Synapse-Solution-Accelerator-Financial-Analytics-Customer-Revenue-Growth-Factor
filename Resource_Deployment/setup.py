@@ -35,10 +35,6 @@ from azureml.automl.core.featurization.featurizationconfig import FeaturizationC
 
 from azureml.core.authentication import ServicePrincipalAuthentication
 
-#sub_tenant_id = "cefcb8e7-ee30-49b8-b190-133f1daafd85" 
-#svc_pr_id = "c21d62cc-31b1-432a-8a81-c4873a0471e0"
-#svc_pr_password="KAG2M_sZ8Er_0.8HJtN1U66N4R.C~ajS~U"
-
 sub_tenant_id = "cefcb8e7-ee30-49b8-b190-133f1daafd85" 
 svc_pr_id = "9d5f7a67-e694-4816-a2f4-cadcc5e8b3d8"
 svc_pr_password="sfj8Q~pr9kkSAlng.v_Y.Rbf.vWgOhwLPxwZtb.e"

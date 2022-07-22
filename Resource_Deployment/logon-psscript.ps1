@@ -212,3 +212,12 @@ $result
 Set-AzSynapseTrigger -WorkspaceName $workspaceName -Name "MyTrigger" -DefinitionFile "C:\synapse-ws-L400\azure-synapse-analytics-workshop-400\artifacts\environment-setup\pipelines\MyTrigger.json"
 Get-AzSynapseTrigger -WorkspaceName $workspaceName -Name "MyTrigger"
 Start-AzSynapseTrigger -WorkspaceName $workspaceName -Name "MyTrigger"
+
+# ML New Template deployment
+$params = @{
+   deploymentId = "$deploymentId"
+}
+New-AzResourceGroupDeployment -ResourceGroupName $resourceGroupName `
+  -TemplateUri "https://raw.githubusercontent.com/Sanket-ST/Azure-Synapse-Solution-Accelerator-Financial-Analytics-Customer-Revenue-Growth-Factor/main/Resource_Deployment/AML-deploy01.json" `
+  -TemplateParameterObject $params
+

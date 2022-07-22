@@ -129,13 +129,6 @@ $asadatalakename = $storageAccounts | Where-Object { $_.Name -Notlike 'ml*' }
 $storagedatalake =$asadatalakename.Name
 
 
-$cellParams = [ordered]@{
-        "#data_lake_account_name#" = $storagedatalake
-        "#file_system_name" = "source"
-        "#full_dataset" = "rawdata"
-
-}
-
 foreach ($notebookName in $notebooks.Keys) {
 
         $notebookFileName = "$($notebooks[$notebookName])\$($notebookName).ipynb"
@@ -172,6 +165,34 @@ Write-Information "Running pipeline $($loadingPipelineName)"
 $result = Run-Pipeline -WorkspaceName $workspaceName -Name $loadingPipelineName
 $result = Wait-ForPipelineRun -WorkspaceName $workspaceName -RunId $result.runId
 $result
+
+
+(Get-Content -Path "C:\synapse-ws-L400\azure-synapse-analytics-workshop-400\artifacts\day-03\lab-06-machine-learning\6 - PBI Data Model.ipynb") | ForEach-Object {$_ -Replace "data_lake_account_name = ''", "data_lake_account_name = '$storagedatalake'"} | Set-Content -Path "C:\synapse-ws-L400\azure-synapse-analytics-workshop-400\artifacts\day-03\lab-06-machine-learning\6 - PBI Data Model.ipynb"
+(Get-Content -Path "C:\synapse-ws-L400\azure-synapse-analytics-workshop-400\artifacts\day-03\lab-06-machine-learning\6 - PBI Data Model.ipynb") | ForEach-Object {$_ -Replace "file_system_name = ''", "file_system_name = 'source'"} | Set-Content -Path "C:\synapse-ws-L400\azure-synapse-analytics-workshop-400\artifacts\day-03\lab-06-machine-learning\6 - PBI Data Model.ipynb"
+
+
+$notebooks = [ordered]@{
+        "6 - PBI Data Model" = "$artifactsPath\day-03\lab-06-machine-learning"
+}
+
+$notebookSparkPools = [ordered]@{
+        "6 - PBI Data Model" = $sparkPoolName1
+}
+
+
+foreach ($notebookName in $notebooks.Keys) {
+
+        $notebookFileName = "$($notebooks[$notebookName])\$($notebookName).ipynb"
+        Write-Information "Creating notebook $($notebookName) from $($notebookFileName)"
+        $result = Create-SparkNotebook -TemplatesPath $templatesPath -SubscriptionId $SubscriptionId -ResourceGroupName $resourceGroupName `
+                -WorkspaceName $workspaceName -SparkPoolName $notebookSparkPools[$notebookName] -Name $notebookName -NotebookFileName $notebookFileName -PersistPayload $false
+        Write-Information "Create notebook initiated..."
+        $operationResult = Wait-ForSparkNotebookOperation -WorkspaceName $workspaceName -OperationId $result.operationId
+        $operationResult
+
+}
+
+
 
 Write-Information "Create pipeline to Set Up Batch Scoring"
 

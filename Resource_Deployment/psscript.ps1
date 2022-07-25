@@ -119,7 +119,7 @@ $workspaceName =$synapseWorkspace.Name
 
 New-AzSynapseFirewallRule -WorkspaceName $workspaceName -Name NewClientIp -StartIpAddress "0.0.0.0" -EndIpAddress "255.255.255.255"
 
-cd C:/Users/demouser
+cd C:/LabFiles
 git clone https://github.com/Sanket-ST/Azure-Synapse-Solution-Accelerator-Financial-Analytics-Customer-Revenue-Growth-Factor
 
 cd C:/
@@ -127,7 +127,7 @@ mkdir synapse-ws-L400
 cd C:\synapse-ws-L400
 git clone https://github.com/solliancenet/azure-synapse-analytics-workshop-400
 
-Copy-Item "C:\Users\demouser\Azure-Synapse-Solution-Accelerator-Financial-Analytics-Customer-Revenue-Growth-Factor\Analytics_Deployment\synapse-workspace\cluster_config\requirements.txt" -Destination "C:\synapse-ws-L400\azure-synapse-analytics-workshop-400\artifacts\environment-setup\automation"
+Copy-Item "C:\LabFiles\Azure-Synapse-Solution-Accelerator-Financial-Analytics-Customer-Revenue-Growth-Factor\Analytics_Deployment\synapse-workspace\cluster_config\requirements.txt" -Destination "C:\synapse-ws-L400\azure-synapse-analytics-workshop-400\artifacts\environment-setup\automation"
                                                                                                                                                                                                          
 
 
@@ -190,7 +190,7 @@ function CreateCredFile($azureUsername, $azurePassword, $azureTenantID, $azureSu
 
 CreateCredFile
 
-Copy-Item "C:\Users\demouser\Azure-Synapse-Solution-Accelerator-Financial-Analytics-Customer-Revenue-Growth-Factor\Analytics_Deployment\synapse-workspace\notebooks\*" -Destination "C:\synapse-ws-L400\azure-synapse-analytics-workshop-400\artifacts\day-03\lab-06-machine-learning"
+Copy-Item "C:\LabFiles\Azure-Synapse-Solution-Accelerator-Financial-Analytics-Customer-Revenue-Growth-Factor\Analytics_Deployment\synapse-workspace\notebooks\*" -Destination "C:\synapse-ws-L400\azure-synapse-analytics-workshop-400\artifacts\day-03\lab-06-machine-learning"
 
 
 (Get-Content -Path "C:\synapse-ws-L400\azure-synapse-analytics-workshop-400\artifacts\day-03\lab-06-machine-learning\1 - Clean Data.ipynb") | ForEach-Object {$_ -Replace "data_lake_account_name = ''", "data_lake_account_name = '$storagedatalake'"} | Set-Content -Path "C:\synapse-ws-L400\azure-synapse-analytics-workshop-400\artifacts\day-03\lab-06-machine-learning\1 - Clean Data.ipynb"

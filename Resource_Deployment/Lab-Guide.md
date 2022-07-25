@@ -16,4 +16,4 @@ Optional
 The architecture diagram below details what you will be building for this Solution Accelerator:
 
 ![](../Reference/Architecture/SynapseArchitecture.png)
-![Azure Synapse AI + AutoML Architecture](./Reference/Architecture/SynapseAutoMLArchitecture.png)
+![](../Reference/Architecture/SynapseAutoMLArchitecture.png)

@@ -15,5 +15,5 @@ Optional
 
 The architecture diagram below details what you will be building for this Solution Accelerator:
 
-![Azure Synapse AI Architecture](./Reference/Architecture/SynapseArchitecture.png)
+!Azure-Synapse-Solution-Accelerator-Financial-Analytics-Customer-Revenue-Growth-Factor/Reference/Architecture/SynapseArchitecture.png
 ![Azure Synapse AI + AutoML Architecture](./Reference/Architecture/SynapseAutoMLArchitecture.png)

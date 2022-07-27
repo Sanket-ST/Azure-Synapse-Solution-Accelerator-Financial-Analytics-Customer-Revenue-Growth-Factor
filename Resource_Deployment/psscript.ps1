@@ -124,35 +124,6 @@ cd "C:\synapse-ws-L400\azure-synapse-analytics-workshop-400\artifacts\environmen
 $sparkpoolName = "spark1"
 Update-AzSynapseSparkPool -WorkspaceName $WorkspaceName -Name $sparkpoolName -LibraryRequirementsFilePath "C:\synapse-ws-L400\azure-synapse-analytics-workshop-400\artifacts\environment-setup\automation\requirements.txt" #path
 
-cd C:/
-
-function InstallGit()
-{
-  Write-Host "Installing Git." -ForegroundColor Green -Verbose
-
-  #download and install git...        
-  $output = "$env:TEMP\git.exe";
-  Invoke-WebRequest -Uri https://github.com/git-for-windows/git/releases/download/v2.27.0.windows.1/Git-2.27.0-64-bit.exe -OutFile $output; 
-
-  $productPath = "$env:TEMP";
-  $productExec = "git.exe"    
-  $argList = "/SILENT"
-  start-process "$productPath\$productExec" -ArgumentList $argList -wait
-
-}
-
-function InstallAzureCli()
-{
-  Write-Host "Installing Azure CLI." -ForegroundColor Green -Verbose
-
-  #install azure cli
-  Invoke-WebRequest -Uri https://aka.ms/installazurecliwindows -OutFile .\AzureCLI.msi -usebasicparsing; 
-  Start-Process msiexec.exe -Wait -ArgumentList '/I AzureCLI.msi /quiet'; 
-  rm .\AzureCLI.msi
-}
-
-InstallGit
-InstallAzureCli
 
 function CreateCredFile($azureUsername, $azurePassword, $azureTenantID, $azureSubscriptionID, $deploymentId)
 {
@@ -189,24 +160,5 @@ CreateCredFile
 (Get-Content -Path "C:\synapse-ws-L400\azure-synapse-analytics-workshop-400\artifacts\day-03\lab-06-machine-learning\3 - Feature Engineering.ipynb") | ForEach-Object {$_ -Replace "file_system_name = ''", "file_system_name = 'source'"} | Set-Content -Path "C:\synapse-ws-L400\azure-synapse-analytics-workshop-400\artifacts\day-03\lab-06-machine-learning\3 - Feature Engineering.ipynb"
 (Get-Content -Path "C:\synapse-ws-L400\azure-synapse-analytics-workshop-400\artifacts\day-03\lab-06-machine-learning\4 - ML Model Building.ipynb") | ForEach-Object {$_ -Replace "data_lake_account_name = ''", "data_lake_account_name = '$storagedatalake'"} | Set-Content -Path "C:\synapse-ws-L400\azure-synapse-analytics-workshop-400\artifacts\day-03\lab-06-machine-learning\4 - ML Model Building.ipynb"
 (Get-Content -Path "C:\synapse-ws-L400\azure-synapse-analytics-workshop-400\artifacts\day-03\lab-06-machine-learning\4 - ML Model Building.ipynb") | ForEach-Object {$_ -Replace "file_system_name = ''", "file_system_name = 'source'"} | Set-Content -Path "C:\synapse-ws-L400\azure-synapse-analytics-workshop-400\artifacts\day-03\lab-06-machine-learning\4 - ML Model Building.ipynb"
-
-
-#Download power Bi desktop
-$WebClient = New-Object System.Net.WebClient
-$WebClient.DownloadFile("https://download.microsoft.com/download/8/8/0/880BCA75-79DD-466A-927D-1ABF1F5454B0/PBIDesktopSetup_x64.exe","C:\LabFiles\PBIDesktop_x64.exe")
-
-#Storage explorer
-choco install microsoftazurestorageexplorer -y -force
-sleep 10
-
-#Python install
-choco install python --version=3.7.2 --force
-
-#Create shorcut in desktop
-$WshShell = New-Object -comObject WScript.Shell
-$Shortcut = $WshShell.CreateShortcut("C:\Users\Public\Desktop\StorageExplorer.lnk")
-$Shortcut.TargetPath = "C:\Program Files (x86)\Microsoft Azure Storage Explorer\StorageExplorer.exe"
-$Shortcut.Save() 
-
 
 Restart-Computer -Force

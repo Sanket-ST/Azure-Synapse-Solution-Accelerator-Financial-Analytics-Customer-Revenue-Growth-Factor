@@ -213,3 +213,53 @@ New-AzResourceGroupDeployment -ResourceGroupName $resourceGroupName `
   -TemplateUri "https://raw.githubusercontent.com/Sanket-ST/Azure-Synapse-Solution-Accelerator-Financial-Analytics-Customer-Revenue-Growth-Factor/main/Resource_Deployment/AML-deploy01.json" `
   -TemplateParameterObject $params
 
+
+. C:\LabFiles\AzureCreds.ps1
+$SubscriptionId = $AzureSubscriptionID
+
+$resourceGroupName = (Get-AzResourceGroup | Where-Object { $_.ResourceGroupName -like "*ManyModels*" }).ResourceGroupName
+
+az configure --defaults group=$resourceGroupName
+$AmlWorkspace = az ml workspace list --resource-group $resourceGroupName --query "[].name" -o tsv
+$run_id = az ml job list --workspace-name $AmlWorkspace --query "[].name" -o tsv
+
+# Replacing commands in setup.py file
+(Get-Content -Path "C:\LabFiles\setup.py") | ForEach-Object {$_ -Replace "data_lake_account_name = 'adlsi4ryf7fd3u5u6'", "data_lake_account_name = '$storagedatalake'"} | Set-Content -Path "C:\LabFiles\setup.py"
+(Get-Content -Path "C:\LabFiles\setup.py") | ForEach-Object {$_ -Replace "file_system_name = 'source'", "file_system_name = 'source'"} | Set-Content -Path "C:\LabFiles\setup.py"
+(Get-Content -Path "C:\LabFiles\setup.py") | ForEach-Object {$_ -Replace "subscription_id = 'fa54ed0f-1041-42a5-b8a3-1cea77b9569d'", "subscription_id = '$SubscriptionId'"} | Set-Content -Path "C:\LabFiles\setup.py"
+(Get-Content -Path "C:\LabFiles\setup.py") | ForEach-Object {$_ -Replace "resource_group = 'ManyModels-680823'", "resource_group ='$resourceGroupName'"} | Set-Content -Path "C:\LabFiles\setup.py"
+(Get-Content -Path "C:\LabFiles\setup.py") | ForEach-Object {$_ -Replace "workspace_name = 'ml-680823'", "workspace_name = '$AmlWorkspace'"} | Set-Content -Path "C:\LabFiles\setup.py"
+(Get-Content -Path "C:\LabFiles\setup.py") | ForEach-Object {$_ -Replace "workspace_region = 'eastus'", "workspace_region = 'eastus'"} | Set-Content -Path "C:\LabFiles\setup.py"
+
+cd C:/LabFiles
+python setup.py
+
+(Get-Content -Path "C:\synapse-ws-L400\azure-synapse-analytics-workshop-400\artifacts\day-03\lab-06-machine-learning\5 - Azure ML Integration.ipynb") | ForEach-Object {$_ -Replace "subscription_id = ''", "subscription_id = '$SubscriptionId'"} | Set-Content -Path "C:\synapse-ws-L400\azure-synapse-analytics-workshop-400\artifacts\day-03\lab-06-machine-learning\5 - Azure ML Integration.ipynb"
+(Get-Content -Path "C:\synapse-ws-L400\azure-synapse-analytics-workshop-400\artifacts\day-03\lab-06-machine-learning\5 - Azure ML Integration.ipynb") | ForEach-Object {$_ -Replace "workspace_name = ''", "workspace_name = '$AmlWorkspace'"} | Set-Content -Path "C:\synapse-ws-L400\azure-synapse-analytics-workshop-400\artifacts\day-03\lab-06-machine-learning\5 - Azure ML Integration.ipynb"
+(Get-Content -Path "C:\synapse-ws-L400\azure-synapse-analytics-workshop-400\artifacts\day-03\lab-06-machine-learning\5 - Azure ML Integration.ipynb") | ForEach-Object {$_ -Replace "resource_group = ''", "resource_group ='$resourceGroupName'"} | Set-Content -Path "C:\synapse-ws-L400\azure-synapse-analytics-workshop-400\artifacts\day-03\lab-06-machine-learning\5 - Azure ML Integration.ipynb"
+(Get-Content -Path "C:\synapse-ws-L400\azure-synapse-analytics-workshop-400\artifacts\day-03\lab-06-machine-learning\5 - Azure ML Integration.ipynb") | ForEach-Object {$_ -Replace "experiment_name = ''", "experiment_name = 'customergrowthfactors'"} | Set-Content -Path "C:\synapse-ws-L400\azure-synapse-analytics-workshop-400\artifacts\day-03\lab-06-machine-learning\5 - Azure ML Integration.ipynb"
+(Get-Content -Path "C:\synapse-ws-L400\azure-synapse-analytics-workshop-400\artifacts\day-03\lab-06-machine-learning\5 - Azure ML Integration.ipynb") | ForEach-Object {$_ -Replace "run_id = ''", "run_id = '$run_id'"} | Set-Content -Path "C:\synapse-ws-L400\azure-synapse-analytics-workshop-400\artifacts\day-03\lab-06-machine-learning\5 - Azure ML Integration.ipynb"
+(Get-Content -Path "C:\synapse-ws-L400\azure-synapse-analytics-workshop-400\artifacts\day-03\lab-06-machine-learning\5 - Azure ML Integration.ipynb") | ForEach-Object {$_ -Replace "data_lake_account_name = ''", "data_lake_account_name = '$storagedatalake'"} | Set-Content -Path "C:\synapse-ws-L400\azure-synapse-analytics-workshop-400\artifacts\day-03\lab-06-machine-learning\5 - Azure ML Integration.ipynb"
+(Get-Content -Path "C:\synapse-ws-L400\azure-synapse-analytics-workshop-400\artifacts\day-03\lab-06-machine-learning\5 - Azure ML Integration.ipynb") | ForEach-Object {$_ -Replace "file_system_name = ''", "file_system_name = 'source'"} | Set-Content -Path "C:\synapse-ws-L400\azure-synapse-analytics-workshop-400\artifacts\day-03\lab-06-machine-learning\5 - Azure ML Integration.ipynb"
+
+
+$notebooks = [ordered]@{
+        "5 - Azure ML Integration" = "$artifactsPath\day-03\lab-06-machine-learning"
+}
+
+$notebookSparkPools = [ordered]@{
+        "5 - Azure ML Integration" = $sparkPoolName1
+}
+
+
+foreach ($notebookName in $notebooks.Keys) {
+
+        $notebookFileName = "$($notebooks[$notebookName])\$($notebookName).ipynb"
+        Write-Information "Creating notebook $($notebookName) from $($notebookFileName)"
+        $result = Create-SparkNotebook -TemplatesPath $templatesPath -SubscriptionId $SubscriptionId -ResourceGroupName $resourceGroupName `
+                -WorkspaceName $workspaceName -SparkPoolName $notebookSparkPools[$notebookName] -Name $notebookName -NotebookFileName $notebookFileName -PersistPayload $false
+        Write-Information "Create notebook initiated..."
+        $operationResult = Wait-ForSparkNotebookOperation -WorkspaceName $workspaceName -OperationId $result.operationId
+        $operationResult
+
+}

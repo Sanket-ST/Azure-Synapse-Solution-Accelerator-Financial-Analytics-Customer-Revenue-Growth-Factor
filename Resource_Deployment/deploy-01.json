@@ -73,31 +73,21 @@
         "[concat('Microsoft.Network/networkInterfaces/', variables('networkInterfaceName'))]"
       ],
       "properties": {
-        "osProfile": {
-          "computerName": "[variables('vmName')]",
-          "adminUsername": "[parameters('adminUsername')]",
-          "adminPassword": "[parameters('adminPassword')]",
-          "windowsConfiguration": {
-            "provisionVmAgent": "true"
-          }
-        },
         "hardwareProfile": {
           "vmSize": "Standard_D4s_v3"
         },
         "storageProfile": {
           "imageReference": {
-            "id": "/subscriptions/32db861e-a593-4eca-bf25-0d5f247b29df/resourceGroups/aec-mgmt-rg/providers/Microsoft.Compute/galleries/sharedImageGallery/images/customerevnuemanymodel/versions/0.0.1"
+            "id": "/subscriptions/32db861e-a593-4eca-bf25-0d5f247b29df/resourceGroups/aec-mgmt-rg/providers/Microsoft.Compute/galleries/sharedImageGallery/images/customerevnuemanymodel/latest"
           },
           "osDisk": {
             "createOption": "fromImage",
+            "diskSizeGB": 256,
+            "name": "[concat(variables('vmName'),'OSDisk')]",
             "managedDisk": {
               "storageAccountType": "Standard_LRS"
-            },
-            "diskSizeGB": 256
-          },
-          "dataDisks": [
-
-          ]
+            }
+          }
         },
         "networkProfile": {
           "networkInterfaces": [

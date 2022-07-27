@@ -161,4 +161,24 @@ CreateCredFile
 (Get-Content -Path "C:\synapse-ws-L400\azure-synapse-analytics-workshop-400\artifacts\day-03\lab-06-machine-learning\4 - ML Model Building.ipynb") | ForEach-Object {$_ -Replace "data_lake_account_name = ''", "data_lake_account_name = '$storagedatalake'"} | Set-Content -Path "C:\synapse-ws-L400\azure-synapse-analytics-workshop-400\artifacts\day-03\lab-06-machine-learning\4 - ML Model Building.ipynb"
 (Get-Content -Path "C:\synapse-ws-L400\azure-synapse-analytics-workshop-400\artifacts\day-03\lab-06-machine-learning\4 - ML Model Building.ipynb") | ForEach-Object {$_ -Replace "file_system_name = ''", "file_system_name = 'source'"} | Set-Content -Path "C:\synapse-ws-L400\azure-synapse-analytics-workshop-400\artifacts\day-03\lab-06-machine-learning\4 - ML Model Building.ipynb"
 
-Restart-Computer -Force
+
+#Download LogonTask
+$WebClient = New-Object System.Net.WebClient
+$WebClient.DownloadFile("https://raw.githubusercontent.com/Sanket-ST/Azure-Synapse-Solution-Accelerator-Financial-Analytics-Customer-Revenue-Growth-Factor/main/Resource_Deployment/logon-psscript.ps1","C:\LabFiles\logon-psscript.ps1")
+
+#Enable Auto-Logon
+$AutoLogonRegPath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"
+Set-ItemProperty -Path $AutoLogonRegPath -Name "AutoAdminLogon" -Value "1" -type String
+Set-ItemProperty -Path $AutoLogonRegPath -Name "DefaultUsername" -Value "$($env:ComputerName)\demouser" -type String
+Set-ItemProperty -Path $AutoLogonRegPath -Name "DefaultPassword" -Value "Password.1!!" -type String
+Set-ItemProperty -Path $AutoLogonRegPath -Name "AutoLogonCount" -Value "1" -type DWord
+
+# Scheduled Task
+$Trigger= New-ScheduledTaskTrigger -AtLogOn
+$User= "$($env:ComputerName)\demouser"
+$Action= New-ScheduledTaskAction -Execute "C:\Windows\System32\WindowsPowerShell\v1.0\Powershell.exe" -Argument "-executionPolicy Unrestricted -File C:\LabFiles\logon-psscript.ps1"
+Register-ScheduledTask -TaskName "Setup" -Trigger $Trigger -User $User -Action $Action -RunLevel Highest -Force
+Set-ExecutionPolicy -ExecutionPolicy bypass -Force
+
+Stop-Transcript
+Restart-Computer -Force 

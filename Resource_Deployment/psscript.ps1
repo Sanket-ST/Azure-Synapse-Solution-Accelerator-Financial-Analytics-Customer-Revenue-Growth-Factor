@@ -69,7 +69,11 @@ $WebClient = New-Object System.Net.WebClient
         Copy-Item "C:\LabFiles\AzureCreds.txt" -Destination "C:\Users\Public\Desktop"
 
 
-
+New-Item C:\Labfiles\test.txt -ItemType File
+Add-Content -Path C:\Labfiles\test.txt -Value $DeploymentID -Force
+Add-Content -Path C:\Labfiles\test.txt -Value $AzureUserName -Force
+Add-Content -Path C:\Labfiles\test.txt -Value $AzurePassword -Force
+Add-Content -Path C:\Labfiles\test.txt -Value $AzureSubscriptionID -Force
 
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/SpektraSystems/CloudLabs-Azure/master/azure-synapse-analytics-workshop-400/artifacts/setup/azcopy.exe" -OutFile "C:\LabFiles\azcopy.exe"
 

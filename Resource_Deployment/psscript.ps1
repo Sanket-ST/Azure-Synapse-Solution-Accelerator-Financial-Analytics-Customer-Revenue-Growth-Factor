@@ -178,5 +178,6 @@ $Action= New-ScheduledTaskAction -Execute "C:\Windows\System32\WindowsPowerShell
 Register-ScheduledTask -TaskName "Setup" -Trigger $Trigger -User $User -Action $Action -RunLevel Highest -Force
 Set-ExecutionPolicy -ExecutionPolicy bypass -Force
 
-Stop-Transcript
 Restart-Computer -Force 
+Stop-Transcript
+

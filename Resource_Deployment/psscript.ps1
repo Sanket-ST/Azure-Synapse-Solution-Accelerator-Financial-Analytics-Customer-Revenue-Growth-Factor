@@ -43,19 +43,38 @@ $commonscriptpath = "$path" + "\cloudlabs-common\cloudlabs-windows-functions.ps1
 
 # Run Imported functions from cloudlabs-windows-functions.ps1
 WindowsServerCommon
-#InstallCloudLabsShadow $ODLID $InstallCloudLabsShadow
-CreateCredFile $azureUsername $azurePassword $azureTenantID $azureSubscriptionID $deploymentId $ODLID
 InstallAzPowerShellModule
-InstallModernVmValidator
+InstallCloudLabsShadow $odlId $InstallCloudLabsShadow
 InstallPowerBIDesktop
+
+#Credfile
+$WebClient = New-Object System.Net.WebClient
+        $WebClient.DownloadFile("https://experienceazure.blob.core.windows.net/templates/cloudlabs-common/AzureCreds.txt","C:\LabFiles\AzureCreds.txt")
+        $WebClient.DownloadFile("https://experienceazure.blob.core.windows.net/templates/cloudlabs-common/AzureCreds.ps1","C:\LabFiles\AzureCreds.ps1")
+        
+        New-Item -ItemType directory -Path C:\LabFiles -force
+
+        (Get-Content -Path "C:\LabFiles\AzureCreds.txt") | ForEach-Object {$_ -Replace "AzureUserNameValue", "$AzureUserName"} | Set-Content -Path "C:\LabFiles\AzureCreds.txt"
+        (Get-Content -Path "C:\LabFiles\AzureCreds.txt") | ForEach-Object {$_ -Replace "AzurePasswordValue", "$AzurePassword"} | Set-Content -Path "C:\LabFiles\AzureCreds.txt"
+        (Get-Content -Path "C:\LabFiles\AzureCreds.txt") | ForEach-Object {$_ -Replace "AzureTenantIDValue", "$AzureTenantID"} | Set-Content -Path "C:\LabFiles\AzureCreds.txt"
+        (Get-Content -Path "C:\LabFiles\AzureCreds.txt") | ForEach-Object {$_ -Replace "AzureSubscriptionIDValue", "$AzureSubscriptionID"} | Set-Content -Path "C:\LabFiles\AzureCreds.txt"
+        (Get-Content -Path "C:\LabFiles\AzureCreds.txt") | ForEach-Object {$_ -Replace "DeploymentIDValue", "$DeploymentID"} | Set-Content -Path "C:\LabFiles\AzureCreds.txt"
+                 
+        (Get-Content -Path "C:\LabFiles\AzureCreds.ps1") | ForEach-Object {$_ -Replace "AzureUserNameValue", "$AzureUserName"} | Set-Content -Path "C:\LabFiles\AzureCreds.ps1"
+        (Get-Content -Path "C:\LabFiles\AzureCreds.ps1") | ForEach-Object {$_ -Replace "AzurePasswordValue", "$AzurePassword"} | Set-Content -Path "C:\LabFiles\AzureCreds.ps1"
+        (Get-Content -Path "C:\LabFiles\AzureCreds.ps1") | ForEach-Object {$_ -Replace "AzureTenantIDValue", "$AzureTenantID"} | Set-Content -Path "C:\LabFiles\AzureCreds.ps1"
+        (Get-Content -Path "C:\LabFiles\AzureCreds.ps1") | ForEach-Object {$_ -Replace "AzureSubscriptionIDValue", "$AzureSubscriptionID"} | Set-Content -Path "C:\LabFiles\AzureCreds.ps1"
+        (Get-Content -Path "C:\LabFiles\AzureCreds.ps1") | ForEach-Object {$_ -Replace "DeploymentIDValue", "$DeploymentID"} | Set-Content -Path "C:\LabFiles\AzureCreds.ps1"
+
+        Copy-Item "C:\LabFiles\AzureCreds.txt" -Destination "C:\Users\Public\Desktop"
+
+
+
 
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/SpektraSystems/CloudLabs-Azure/master/azure-synapse-analytics-workshop-400/artifacts/setup/azcopy.exe" -OutFile "C:\LabFiles\azcopy.exe"
 
-Add-Content -Path "C:\LabFiles\AzureCreds.txt" -Value "ODLID= $ODLID" -PassThru
 
 $LabFilesDirectory = "C:\LabFiles"
-
-. C:\LabFiles\AzureCreds.ps1
 
 $userName = $AzureUserName
 $password = $AzurePassword
@@ -67,7 +86,7 @@ $cred = new-object -typename System.Management.Automation.PSCredential -argument
 Connect-AzAccount -Credential $cred | Out-Null
 
 $resourceGroupName = (Get-AzResourceGroup | Where-Object { $_.ResourceGroupName -like "*ManyModels*" }).ResourceGroupName
-$deploymentId =  (Get-AzResourceGroup -Name $resourceGroupName).Tags["DeploymentId"]
+#$deploymentId =  (Get-AzResourceGroup -Name $resourceGroupName).Tags["DeploymentId"]
 
 # Template deployment
 

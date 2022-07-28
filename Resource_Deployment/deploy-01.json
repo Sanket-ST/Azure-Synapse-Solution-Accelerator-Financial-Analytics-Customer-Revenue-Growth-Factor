@@ -48,7 +48,8 @@
     "networkSecurityGroupName": "nsg",
     "virtualNetworkName": "vnet",
     "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]",
-    "subnetRef": "[concat(variables('vnetID'),'/subnets/','subnet')]"
+    "subnetRef": "[concat(variables('vnetID'),'/subnets/','subnet')]",
+    "virtualMachineSize": "Standard_DS2_v2"
   },
   "resources": [
     {
@@ -68,13 +69,13 @@
       "name": "[variables('vmName')]",
       "type": "Microsoft.Compute/virtualMachines",
       "apiVersion": "2019-07-01",
-      "location": "[resourceGroup().location]",
+      "location": "[variables('location')]",
       "dependsOn": [
         "[concat('Microsoft.Network/networkInterfaces/', variables('networkInterfaceName'))]"
       ],
       "properties": {
         "hardwareProfile": {
-          "vmSize": "Standard_D4s_v3"
+          "vmSize": "[variables('virtualMachineSize')]"
         },
         "storageProfile": {
           "imageReference": {
@@ -82,11 +83,12 @@
           },
           "osDisk": {
             "createOption": "fromImage",
-            "name": "[concat(variables('vmName'),'OSDisk')]",
+            "name": "[concat(variables('vmName'), '-osdisk')]",
             "managedDisk": {
               "storageAccountType": "Standard_LRS"
             }
-          }
+          },
+          "dataDisks": []
         },
         "networkProfile": {
           "networkInterfaces": [
@@ -95,31 +97,35 @@
             }
           ]
         }
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "[concat(variables('vmName'),'/', 'winExtension')]",
+      "apiVersion": "2019-07-01",
+      "location": "[resourceGroup().location]",
+      "comments": "Script",
+      "tags": {
+        "displayName": "VM Extension"
       },
-      "resources": [
-        {
-          "type": "extensions",
-          "name": "vmExtension",
-          "apiVersion": "2015-06-15",
-          "location": "[resourceGroup().location]",
-          "dependsOn": [
-            "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'))]"
-          ],
-          "properties": {
-            "publisher": "Microsoft.Compute",
-            "type": "CustomScriptExtension",
-            "typeHandlerVersion": "1.8",
-            "autoUpgradeMinorVersion": "true",
-            "settings": {
-              "fileUris": [
-                "https://experienceazure.blob.core.windows.net/templates/cloudlabs-common/cloudlabs-windows-functions.ps1",
-                "https://raw.githubusercontent.com/Sanket-ST/Azure-Synapse-Solution-Accelerator-Financial-Analytics-Customer-Revenue-Growth-Factor/main/Resource_Deployment/psscript.ps1"
-              ],
+      "dependsOn": [
+        "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'))]"
+      ],
+      "properties": {
+        "publisher": "Microsoft.Compute",
+        "type": "CustomScriptExtension",
+        "typeHandlerVersion": "1.8",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "fileUris": [
+            "https://experienceazure.blob.core.windows.net/templates/cloudlabs-common/cloudlabs-windows-functions.ps1",
+            "https://raw.githubusercontent.com/Sanket-ST/Azure-Synapse-Solution-Accelerator-Financial-Analytics-Customer-Revenue-Growth-Factor/main/Resource_Deployment/psscript.ps1"
+          ]
+        },
+        "protectedSettings": {
               "commandToExecute": "[concat('powershell.exe -ExecutionPolicy Unrestricted -File psscript.ps1', variables('cloudlabsCommon'), variables('Enable-CloudLabsEmbeddedShadow'))]"
-            }
-          }
         }
-      ]
+      }
     },
     {
       "name": "[variables('virtualNetworkName')]",

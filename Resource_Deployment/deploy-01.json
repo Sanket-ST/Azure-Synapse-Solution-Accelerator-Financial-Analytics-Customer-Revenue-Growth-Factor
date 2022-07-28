@@ -97,35 +97,31 @@
             }
           ]
         }
-      }
-    },
-    {
-      "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(variables('vmName'),'/', 'winExtension')]",
-      "apiVersion": "2019-07-01",
-      "location": "[resourceGroup().location]",
-      "comments": "Script",
-      "tags": {
-        "displayName": "VM Extension"
       },
-      "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'))]"
-      ],
-      "properties": {
-        "publisher": "Microsoft.Compute",
-        "type": "CustomScriptExtension",
-        "typeHandlerVersion": "1.8",
-        "autoUpgradeMinorVersion": true,
-        "settings": {
-          "fileUris": [
-            "https://experienceazure.blob.core.windows.net/templates/cloudlabs-common/cloudlabs-windows-functions.ps1",
-            "https://raw.githubusercontent.com/Sanket-ST/Azure-Synapse-Solution-Accelerator-Financial-Analytics-Customer-Revenue-Growth-Factor/main/Resource_Deployment/psscript.ps1"
-          ]
-        },
-        "protectedSettings": {
+      "resources": [
+        {
+          "type": "extensions",
+          "name": "vmExtension",
+          "apiVersion": "2019-07-01",
+          "location": "[resourceGroup().location]",
+          "dependsOn": [
+            "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'))]"
+          ],
+          "properties": {
+            "publisher": "Microsoft.Compute",
+            "type": "CustomScriptExtension",
+            "typeHandlerVersion": "1.8",
+            "autoUpgradeMinorVersion": "true",
+            "settings": {
+              "fileUris": [
+                "https://experienceazure.blob.core.windows.net/templates/cloudlabs-common/cloudlabs-windows-functions.ps1",
+                "https://raw.githubusercontent.com/Sanket-ST/Azure-Synapse-Solution-Accelerator-Financial-Analytics-Customer-Revenue-Growth-Factor/main/Resource_Deployment/psscript.ps1"
+              ],
               "commandToExecute": "[concat('powershell.exe -ExecutionPolicy Unrestricted -File psscript.ps1', variables('cloudlabsCommon'), variables('Enable-CloudLabsEmbeddedShadow'))]"
+            }
+          }
         }
-      }
+      ]
     },
     {
       "name": "[variables('virtualNetworkName')]",

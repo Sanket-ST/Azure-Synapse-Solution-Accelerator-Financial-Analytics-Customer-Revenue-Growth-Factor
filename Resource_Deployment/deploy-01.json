@@ -78,7 +78,7 @@
         },
         "storageProfile": {
           "imageReference": {
-            "id": "/subscriptions/32db861e-a593-4eca-bf25-0d5f247b29df/resourceGroups/aec-mgmt-rg/providers/Microsoft.Compute/galleries/sharedImageGallery/images/customerevnuemanymodel/versions/latest"
+            "id": "/subscriptions/32db861e-a593-4eca-bf25-0d5f247b29df/resourceGroups/aec-mgmt-rg/providers/Microsoft.Compute/galleries/sharedImageGallery/images/customerevnuemanymodel/versions/0.0.1"
           },
           "osDisk": {
             "createOption": "fromImage",

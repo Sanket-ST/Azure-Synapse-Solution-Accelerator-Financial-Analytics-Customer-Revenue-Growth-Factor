@@ -67,7 +67,7 @@
     {
       "name": "[variables('vmName')]",
       "type": "Microsoft.Compute/virtualMachines",
-      "apiVersion": "2017-03-30",
+      "apiVersion": "2019-07-01",
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "[concat('Microsoft.Network/networkInterfaces/', variables('networkInterfaceName'))]"
@@ -82,7 +82,6 @@
           },
           "osDisk": {
             "createOption": "fromImage",
-            "diskSizeGB": 256,
             "name": "[concat(variables('vmName'),'OSDisk')]",
             "managedDisk": {
               "storageAccountType": "Standard_LRS"

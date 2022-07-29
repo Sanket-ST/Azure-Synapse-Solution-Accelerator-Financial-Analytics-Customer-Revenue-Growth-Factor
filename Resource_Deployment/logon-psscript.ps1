@@ -216,10 +216,14 @@ New-AzResourceGroupDeployment -ResourceGroupName $resourceGroupName `
 
 
 . C:\Packages\AzureCreds.ps1
+
+$userName = $AzureUserName
+$password = $AzurePassword
 $SubscriptionId = $AzureSubscriptionID
 
 $resourceGroupName = (Get-AzResourceGroup | Where-Object { $_.ResourceGroupName -like "*ManyModels*" }).ResourceGroupName
 
+az login -u $userName -p $password
 az configure --defaults group=$resourceGroupName
 $AmlWorkspace = az ml workspace list --resource-group $resourceGroupName --query "[].name" -o tsv
 $run_id = az ml job list --workspace-name $AmlWorkspace --query "[].name" -o tsv

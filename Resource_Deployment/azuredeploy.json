@@ -166,7 +166,7 @@
                 "cacheSize": 0,
                 "dynamicExecutorAllocation": {
                     "enabled": true,
-                    "maxExecutors": 3,
+                    "maxExecutors": 1,
                     "minExecutors": 15
                 },
                 "provisioningState": "Succeeded"

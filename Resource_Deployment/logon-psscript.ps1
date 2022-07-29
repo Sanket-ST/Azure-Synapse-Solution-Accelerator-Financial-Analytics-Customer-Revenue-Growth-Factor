@@ -226,7 +226,6 @@ $resourceGroupName = (Get-AzResourceGroup | Where-Object { $_.ResourceGroupName 
 az login -u $userName -p $password
 az configure --defaults group=$resourceGroupName
 $AmlWorkspace = az ml workspace list --resource-group $resourceGroupName --query "[].name" -o tsv
-$run_id = az ml job list --workspace-name $AmlWorkspace --query "[].name" -o tsv
 
 # Replacing commands in setup.py file
 (Get-Content -Path "C:\LabFiles\setup.py") | ForEach-Object {$_ -Replace "data_lake_account_name = 'adlsi4ryf7fd3u5u6'", "data_lake_account_name = '$storagedatalake'"} | Set-Content -Path "C:\LabFiles\setup.py"
@@ -238,6 +237,8 @@ $run_id = az ml job list --workspace-name $AmlWorkspace --query "[].name" -o tsv
 
 cd C:/LabFiles
 python setup.py
+
+$run_id = az ml job list --workspace-name $AmlWorkspace --query "[].name" -o tsv
 
 (Get-Content -Path "C:\synapse-ws-L400\azure-synapse-analytics-workshop-400\artifacts\day-03\lab-06-machine-learning\5 - Azure ML Integration.ipynb") | ForEach-Object {$_ -Replace "subscription_id = ''", "subscription_id = '$SubscriptionId'"} | Set-Content -Path "C:\synapse-ws-L400\azure-synapse-analytics-workshop-400\artifacts\day-03\lab-06-machine-learning\5 - Azure ML Integration.ipynb"
 (Get-Content -Path "C:\synapse-ws-L400\azure-synapse-analytics-workshop-400\artifacts\day-03\lab-06-machine-learning\5 - Azure ML Integration.ipynb") | ForEach-Object {$_ -Replace "workspace_name = ''", "workspace_name = '$AmlWorkspace'"} | Set-Content -Path "C:\synapse-ws-L400\azure-synapse-analytics-workshop-400\artifacts\day-03\lab-06-machine-learning\5 - Azure ML Integration.ipynb"

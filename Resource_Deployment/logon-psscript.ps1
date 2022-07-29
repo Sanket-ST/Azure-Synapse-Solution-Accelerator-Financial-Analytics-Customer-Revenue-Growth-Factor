@@ -3,7 +3,7 @@ cd './synapse-ws-L400/azure-synapse-analytics-workshop-400/artifacts/environment
 
 $InformationPreference = "Continue"
 
-$IsCloudLabs = Test-Path C:\LabFiles\AzureCreds.ps1;
+$IsCloudLabs = Test-Path C:\Packages\AzureCreds.ps1;
 
 if($IsCloudLabs){
         if(Get-Module -Name solliance-synapse-automation){
@@ -11,7 +11,7 @@ if($IsCloudLabs){
         }
         Import-Module "C:\synapse-ws-L400\azure-synapse-analytics-workshop-400\artifacts\environment-setup\solliance-synapse-automation"
 
-        . C:\LabFiles\AzureCreds.ps1
+        . C:\Packages\AzureCreds.ps1
 
         $userName = $AzureUserName                # READ FROM FILE
         $password = $AzurePassword                # READ FROM FILE
@@ -215,7 +215,7 @@ New-AzResourceGroupDeployment -ResourceGroupName $resourceGroupName `
   -TemplateParameterObject $params
 
 
-. C:\LabFiles\AzureCreds.ps1
+. C:\Packages\AzureCreds.ps1
 $SubscriptionId = $AzureSubscriptionID
 
 $resourceGroupName = (Get-AzResourceGroup | Where-Object { $_.ResourceGroupName -like "*ManyModels*" }).ResourceGroupName

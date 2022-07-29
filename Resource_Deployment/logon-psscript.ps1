@@ -206,6 +206,7 @@ Get-AzSynapseTrigger -WorkspaceName $workspaceName -Name "MyTrigger"
 Start-AzSynapseTrigger -WorkspaceName $workspaceName -Name "MyTrigger"
 
 # ML New Template deployment
+$deploymentId =  (Get-AzResourceGroup -Name $resourceGroupName).Tags["DeploymentId"]
 $params = @{
    deploymentId = "$deploymentId"
 }

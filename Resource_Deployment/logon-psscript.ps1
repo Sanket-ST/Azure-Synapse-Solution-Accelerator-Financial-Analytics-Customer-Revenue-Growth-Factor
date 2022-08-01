@@ -1,4 +1,4 @@
-cd './synapse-ws-L400/azure-synapse-analytics-workshop-400/artifacts/environment-setup/automation'
+cd 'C:\synapse-ws-L400\azure-synapse-analytics-workshop-400\artifacts\environment-setup'
 
 
 $InformationPreference = "Continue"
@@ -225,6 +225,7 @@ $resourceGroupName = (Get-AzResourceGroup | Where-Object { $_.ResourceGroupName 
 
 az login -u $userName -p $password
 az configure --defaults group=$resourceGroupName
+az extension add --name ml
 $AmlWorkspace = az ml workspace list --resource-group $resourceGroupName --query "[].name" -o tsv
 
 # Replacing commands in setup.py file
